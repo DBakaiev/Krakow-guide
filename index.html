@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Kraków • Dmytro's Taxi Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #0B0C0E;
+            color: #EAE8E3;
+            line-height: 1.5;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
+            overflow-x: hidden;
+            touch-action: pan-y;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 16px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            min-height: 100vh;
+        }
+
+        /* ----- HEADER ----- */
+        .header {
+            text-align: left;
+            border-left: 4px solid #F5C542;
+            padding-left: 16px;
+        }
+
+        .header .taxi-icon {
+            font-size: 2.4rem;
+            color: #F5C542;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #FFFFFF;
+            line-height: 1.2;
+        }
+
+        .header .subtitle {
+            color: #A6A29A;
+            font-size: 0.95rem;
+            font-weight: 400;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header .subtitle i {
+            color: #F5C542;
+            font-size: 0.9rem;
+        }
+
+        /* ----- PAGE INDICATOR (точки) ----- */
+        .page-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 4px 0;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2C2E33;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #F5C542;
+            width: 28px;
+            border-radius: 10px;
+        }
+
+        .page-label {
+            color: #7D7A73;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        /* ----- WHATSAPP CONTACT BOX ----- */
+        .contact-box {
+            background: #15171B;
+            border: 1px solid #25D366;
+            border-radius: 20px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.15);
+        }
+
+        .contact-box .driver-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contact-box .driver-info i {
+            font-size: 2.2rem;
+            color: #F5C542;
+        }
+
+        .contact-box .driver-text strong {
+            color: #FFFFFF;
+            font-size: 1rem;
+            display: block;
+        }
+
+        .contact-box .driver-text span {
+            color: #A6A29A;
+            font-size: 0.85rem;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: #0B0C0E;
+            padding: 14px 22px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
+            min-height: 44px;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .whatsapp-btn:active {
+            background: #1da851;
+            transform: scale(0.96);
+        }
+
+        /* ----- SWIPE CONTAINER ----- */
+        .swipe-container {
+            position: relative;
+            overflow: hidden;
+            touch-action: pan-y;
+            user-select: none;
+            -webkit-user-select: none;
+            min-height: 300px;
+        }
+
+        .swipe-track {
+            display: flex;
+            transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+
+        .swipe-page {
+            flex: 0 0 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-right: 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #2C2E33;
+            padding-bottom: 12px;
+        }
+
+        .section-title i {
+            color: #F5C542;
+            font-size: 1.4rem;
+            width: 28px;
+            text-align: center;
+        }
+
+        /* ----- CARDS ----- */
+        .card {
+            background: #15171B;
+            border: 1px solid #23262B;
+            border-radius: 20px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card h3 i {
+            color: #F5C542;
+            font-size: 1rem;
+            width: 20px;
+        }
+
+        .card .badge {
+            background: #23262B;
+            color: #A6A29A;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .card p {
+            color: #B1ADA4;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .card .address-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+            border-top: 1px solid #23262B;
+            padding-top: 10px;
+        }
+
+        .card .address {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: #7D7A73;
+        }
+
+        .card .address i {
+            font-size: 0.75rem;
+            color: #F5C542;
+        }
+
+        .maps-link {
+            background: #1A1C20;
+            border: 1px solid #2C2E33;
+            color: #F5C542;
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            min-height: 44px;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .maps-link:active {
+            background: #F5C542;
+            color: #0B0C0E;
+            border-color: #F5C542;
+        }
+
+        /* ----- TRIP CARD ----- */
+        .trip-card {
+            background: #15171B;
+            border: 1px solid #F5C54240;
+            border-radius: 20px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .trip-highlight {
+            background: #F5C54215;
+            border: 1px solid #F5C54230;
+            border-radius: 14px;
+            padding: 14px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #F5C542;
+        }
+
+        .trip-highlight i {
+            font-size: 1.3rem;
+        }
+
+        .highlight {
+            color: #F5C542;
+            font-weight: 500;
+        }
+
+        /* ----- SWIPE HINT ----- */
+        .swipe-hint {
+            color: #4A4945;
+            font-size: 0.75rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            animation: hintPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* ----- FLOATING WHATSAPP ----- */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #25D366;
+            color: #0B0C0E;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5);
+            text-decoration: none;
+            z-index: 999;
+            border: 2px solid #1da851;
+        }
+
+        .floating-whatsapp:active {
+            transform: scale(0.9);
+        }
+
+        /* ----- FOOTER ----- */
+        .footer-note {
+            background: #1A1C20;
+            border-radius: 20px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #2C2E33;
+            color: #CBC7BF;
+            font-size: 0.9rem;
+        }
+
+        .footer-note i {
+            font-size: 1.5rem;
+            color: #F5C542;
+        }
+
+        .footer-note strong {
+            color: #FFFFFF;
+        }
+
+        @media (max-width: 380px) {
+            .whatsapp-btn {
+                padding: 12px 16px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <i class="fas fa-taxi taxi-icon"></i>
+            <h1>Kraków <span style="font-weight:300; color:#F5C542;">Guide</span></h1>
+            <div class="subtitle">
+                <i class="fas fa-map-pin"></i> Your personal guide by Dmytro
+            </div>
+        </div>
+
+        <!-- CONTACT BOX -->
+        <div class="contact-box">
+            <div class="driver-info">
+                <i class="fas fa-user-circle"></i>
+                <div class="driver-text">
+                    <strong>Dmytro — Your Driver</strong>
+                    <span>Text or call anytime</span>
+                </div>
+            </div>
+            <a href="https://wa.me/48888675462?text=Hello%20Dmytro!%20I'm%20interested%20in%20a%20ride%20around%20Kraków" 
+               class="whatsapp-btn" target="_blank" rel="noopener">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+        </div>
+
+        <!-- Page indicator -->
+        <div>
+            <div class="page-label" id="pageLabel">Photo Spots</div>
+            <div class="page-indicator" id="pageIndicator">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+
+        <!-- Swipe hint -->
+        <div class="swipe-hint">
+            <i class="fas fa-arrow-left"></i> Swipe left / right to explore <i class="fas fa-arrow-right"></i>
+        </div>
+
+        <!-- SWIPE CONTAINER -->
+        <div class="swipe-container" id="swipeContainer">
+            <div class="swipe-track" id="swipeTrack">
+                
+                <!-- PAGE 0: Photo -->
+                <div class="swipe-page" data-index="0">
+                    <div class="section-title">
+                        <i class="fas fa-camera-retro"></i> Instagram Spots
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-water"></i> Zakrzówek</h3>
+                            <span class="badge">top pick</span>
+                        </div>
+                        <p>Turquoise lakes in a former quarry. Viewing platforms and cliffs — perfect for stunning shots.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> ul. Twardowskiego, Zakrzówek Park</div>
+                            <a href="https://www.google.com/maps/place/Zakrz%C3%B3wek,+Krak%C3%B3w/@50.0384,19.9130,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-heart"></i> Kazimierz</h3>
+                            <span class="badge">vibe</span>
+                        </div>
+                        <p>Józefa Street, Plac Nowy and the Bernatka Bridge with love locks. The soul of the old Jewish Quarter.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Kazimierz, around Plac Nowy</div>
+                            <a href="https://www.google.com/maps/place/Plac+Nowy,+Krak%C3%B3w/@50.0518,19.9445,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-crown"></i> Kanonicza Street</h3>
+                        </div>
+                        <p>One of the most photogenic streets at the foot of Wawel. Few tourists, perfect light.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> ul. Kanonicza</div>
+                            <a href="https://www.google.com/maps/place/Kanonicza,+Krak%C3%B3w/@50.0567,19.9368,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-church"></i> Tyniec Abbey</h3>
+                        </div>
+                        <p>Benedictine abbey overlooking the Vistula River. Just 15 minutes from the centre, river panorama.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Opactwo Benedyktynów, Tyniec</div>
+                            <a href="https://www.google.com/maps/place/Tyniec+Benedictine+Abbey/@50.0187,19.8016,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 1: History -->
+                <div class="swipe-page" data-index="1">
+                    <div class="section-title">
+                        <i class="fas fa-landmark"></i> Must-See History
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chess-king"></i> Wawel Hill</h3>
+                            <span class="badge">heart</span>
+                        </div>
+                        <p>The Royal Castle and Cathedral, burial place of kings. Postcard-perfect Vistula view at sunset.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Wawel 5</div>
+                            <a href="https://www.google.com/maps/place/Wawel+Castle/@50.0540,19.9354,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-city"></i> Main Market Square</h3>
+                        </div>
+                        <p>Europe's largest medieval square. St. Mary's Basilica, Veit Stoss altarpiece and the hourly bugle call.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Rynek Główny</div>
+                            <a href="https://www.google.com/maps/place/Main+Market+Square/@50.0614,19.9372,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-archway"></i> Underground Market Museum</h3>
+                        </div>
+                        <p>Interactive museum beneath the square — walk on original 12th–13th century medieval cobblestones.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Rynek Główny 1</div>
+                            <a href="https://www.google.com/maps/place/Rynek+Underground+Museum/@50.0616,19.9373,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-factory"></i> Schindler's Factory</h3>
+                        </div>
+                        <p>Museum about Kraków under Nazi occupation and the story of those saved by Oskar Schindler.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> ul. Lipowa 4</div>
+                            <a href="https://www.google.com/maps/place/Schindler's+Factory/@50.0474,19.9617,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 2: Food -->
+                <div class="swipe-page" data-index="2">
+                    <div class="section-title">
+                        <i class="fas fa-utensils"></i> Traditional Cuisine
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bowl-food"></i> Kogel Mogel</h3>
+                            <span class="badge">must eat</span>
+                        </div>
+                        <p>Polish classics with a restaurant twist. Famous borscht, cured lard, pierogi. Very cosy atmosphere.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> ul. Sienna 12</div>
+                            <a href="https://www.google.com/maps/place/Kogel+Mogel/@50.0602,19.9387,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-mountain-sun"></i> Zielone Tarasy</h3>
+                        </div>
+                        <p>Panoramic restaurant with traditional meat and vegetarian dishes. View of the Beskids on clear days.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> al. Słowackiego 64</div>
+                            <a href="https://www.google.com/maps/place/Zielone+Tarasy/@50.0771,19.9247,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-castle"></i> U Ziyada</h3>
+                        </div>
+                        <p>Restaurant in Przegorzały Castle. Romantic dinner with a view of the Vistula bend.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> ul. Jodłowa 13</div>
+                            <a href="https://www.google.com/maps/place/U+Ziyada/@50.0488,19.8735,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 3: Views -->
+                <div class="swipe-page" data-index="3">
+                    <div class="section-title">
+                        <i class="fas fa-binoculars"></i> Best Viewpoints
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-mound"></i> Krakus Mound</h3>
+                            <span class="badge">free</span>
+                        </div>
+                        <p>A hill in Podgórze. The best free panorama of the Old Town from the south.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Kopiec Krakusa, Podgórze</div>
+                            <a href="https://www.google.com/maps/place/Krakus+Mound/@50.0381,19.9584,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-monument"></i> Kościuszko Mound</h3>
+                        </div>
+                        <p>360° panorama: from Wawel to Błonia. Paid entry but the views are priceless.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> al. Waszyngtona 1</div>
+                            <a href="https://www.google.com/maps/place/Ko%C5%9Bciuszko+Mound/@50.0529,19.8937,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bell"></i> St. Mary's Basilica Tower</h3>
+                        </div>
+                        <p>Bird's eye view of the Market Square. Spot the tower details and hear the bugle call up close.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Plac Mariacki 5</div>
+                            <a href="https://www.google.com/maps/place/St.+Mary's+Basilica/@50.0617,19.9391,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 4: Auschwitz -->
+                <div class="swipe-page" data-index="4">
+                    <div class="section-title">
+                        <i class="fas fa-memorial"></i> Auschwitz-Birkenau
+                    </div>
+                    
+                    <div class="trip-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-train"></i> Auschwitz I & Auschwitz II-Birkenau</h3>
+                            <span class="badge">must visit</span>
+                        </div>
+                        <p>The former Nazi concentration and extermination camp. A UNESCO World Heritage Site and a powerful memorial to the victims of the Holocaust.</p>
+                        <p style="color:#A6A29A; font-size:0.8rem; margin-top:4px;">
+                            <i class="fas fa-info-circle" style="color:#F5C542;"></i> 
+                            Entry is <strong>free</strong> but <span class="highlight">advance reservation</span> required. 
+                            Tours ~<span class="highlight">3.5 hrs</span>. Distance: <span class="highlight">70 km (~1h 15min)</span> from Kraków.
+                        </p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Więźniów Oświęcimia 20, Oświęcim</div>
+                            <a href="https://www.google.com/maps/place/Auschwitz-Birkenau+Memorial+and+Museum/@50.0358,19.1783,14z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                        <div class="trip-highlight">
+                            <i class="fas fa-taxi"></i>
+                            <div>
+                                <strong>Need a ride?</strong> I offer direct transfers from Kraków to Auschwitz and back. 
+                                <span class="highlight">Contact me on WhatsApp</span> for details.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 5: Zakopane -->
+                <div class="swipe-page" data-index="5">
+                    <div class="section-title">
+                        <i class="fas fa-mountain"></i> Zakopane & Tatra Mountains
+                    </div>
+                    
+                    <div class="trip-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-snowflake"></i> Zakopane — Winter Capital</h3>
+                            <span class="badge">day trip</span>
+                        </div>
+                        <p>Poland's most popular mountain resort at the foot of the Tatra Mountains. Wooden architecture, oscypek cheese, and stunning alpine scenery.</p>
+                        <p style="color:#A6A29A; font-size:0.8rem; margin-top:4px;">
+                            <i class="fas fa-info-circle" style="color:#F5C542;"></i> 
+                            Distance: <span class="highlight">110 km (~1h 45min)</span> from Kraków. 
+                            Perfect for a full day trip — hiking, skiing, or enjoying the views.
+                        </p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Zakopane, Tatra Mountains</div>
+                            <a href="https://www.google.com/maps/place/Zakopane/@49.2992,19.9496,14z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-cable-car"></i> Gubałówka Hill</h3>
+                        </div>
+                        <p>Funicular to panoramic Tatra views. Restaurants, shops, and a summer slide at the summit.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Na Gubałówkę, Zakopane</div>
+                            <a href="https://www.google.com/maps/place/Guba%C5%82%C3%B3wka/@49.3047,19.9355,15z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-road"></i> Krupówki Street</h3>
+                        </div>
+                        <p>Main pedestrian street with restaurants, shops, and <span class="highlight">oscypek</span> cheese stalls.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Krupówki, Zakopane</div>
+                            <a href="https://www.google.com/maps/place/Krup%C3%B3wki,+Zakopane/@49.2943,19.9501,17z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-water"></i> Morskie Oko</h3>
+                            <span class="badge">iconic</span>
+                        </div>
+                        <p>Stunning emerald lake surrounded by 2,500m peaks. 2-hour walk or horse carriage from Palenica.</p>
+                        <div class="address-row">
+                            <div class="address"><i class="fas fa-location-dot"></i> Morskie Oko, Tatra National Park</div>
+                            <a href="https://www.google.com/maps/place/Morskie+Oko/@49.1972,20.0705,15z" class="maps-link" target="_blank" rel="noopener">
+                                <i class="fas fa-map-marker-alt"></i> Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="trip-highlight">
+                        <i class="fas fa-taxi"></i>
+                        <div>
+                            <strong>Day trip to Zakopane?</strong> Comfortable transfers with scenic stops. 
+                            <span class="highlight">Message me on WhatsApp!</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /swipe-track -->
+        </div><!-- /swipe-container -->
+
+        <!-- Driver's tip -->
+        <div class="footer-note">
+            <i class="fas fa-comment-dots"></i>
+            <div>
+                <strong>Dmytro's tip:</strong><br>
+                "Best photo without crowds — <span class="highlight">Zakrzówek</span> or <span class="highlight">Tyniec</span>. Best pierogi — <span class="highlight">Kogel Mogel</span>. Day trip? I'll drive you to <span class="highlight">Auschwitz</span> or <span class="highlight">Zakopane</span>."
+            </div>
+        </div>
+        <div style="color:#4A4945; font-size:0.7rem; text-align:center; margin-top:4px;">
+            Dmytro — Your Kraków taxi driver • 2026
+        </div>
+    </div>
+
+    <!-- FLOATING WHATSAPP -->
+    <a href="https://wa.me/48888675462?text=Hello%20Dmytro!%20I'm%20interested%20in%20a%20ride%20around%20Kraków" 
+       class="floating-whatsapp" target="_blank" rel="noopener" title="Message Dmytro">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // ПРОСТОЙ СВАЙП-ДВИЖОК
+        (function() {
+            var track = document.getElementById('swipeTrack');
+            var container = document.getElementById('swipeContainer');
+            var dots = document.querySelectorAll('#pageIndicator .dot');
+            var label = document.getElementById('pageLabel');
+            
+            var pageNames = [
+                'Photo Spots',
+                'History',
+                'Traditional Cuisine',
+                'Best Viewpoints',
+                'Auschwitz-Birkenau',
+                'Zakopane & Tatra'
+            ];
+            
+            var totalPages = 6;
+            var currentPage = 0;
+            var startX = 0;
+            var currentX = 0;
+            var isDragging = false;
+            var trackStartX = 0;
+            
+            function updateUI(index, animate) {
+                if (animate === false) {
+                    track.style.transition = 'none';
+                } else {
+                    track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                }
+                
+                var offset = -index * container.offsetWidth;
+                track.style.transform = 'translateX(' + offset + 'px)';
+                
+                // Update dots
+                dots.forEach(function(dot, i) {
+                    dot.classList.toggle('active', i === index);
+                });
+                
+                // Update label
+                label.textContent = pageNames[index];
+                
+                currentPage = index;
+            }
+            
+            function goToPage(index) {
+                if (index < 0) index = 0;
+                if (index >= totalPages) index = totalPages - 1;
+                updateUI(index, true);
+            }
+            
+            // Touch events
+            track.addEventListener('touchstart', function(e) {
+                startX = e.touches[0].clientX;
+                currentX = startX;
+                isDragging = true;
+                trackStartX = -currentPage * container.offsetWidth;
+                track.style.transition = 'none';
+            }, { passive: true });
+            
+            track.addEventListener('touchmove', function(e) {
+                if (!isDragging) return;
+                currentX = e.touches[0].clientX;
+                var diff = currentX - startX;
+                var newX = trackStartX + diff;
+                
+                // Добавляем сопротивление на краях
+                if (currentPage === 0 && diff > 0) {
+                    newX = trackStartX + diff * 0.3;
+                } else if (currentPage === totalPages - 1 && diff < 0) {
+                    newX = trackStartX + diff * 0.3;
+                }
+                
+                track.style.transform = 'translateX(' + newX + 'px)';
+            }, { passive: true });
+            
+            track.addEventListener('touchend', function(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                var diff = currentX - startX;
+                var threshold = container.offsetWidth * 0.2;
+                
+                if (diff < -threshold) {
+                    // Свайп влево — следующая страница
+                    goToPage(currentPage + 1);
+                } else if (diff > threshold) {
+                    // Свайп вправо — предыдущая
+                    goToPage(currentPage - 1);
+                } else {
+                    // Возврат на текущую
+                    goToPage(currentPage);
+                }
+            });
+            
+            // Mouse events (для теста на десктопе)
+            track.addEventListener('mousedown', function(e) {
+                startX = e.clientX;
+                currentX = startX;
+                isDragging = true;
+                trackStartX = -currentPage * container.offsetWidth;
+                track.style.transition = 'none';
+                e.preventDefault();
+            });
+            
+            track.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                currentX = e.clientX;
+                var diff = currentX - startX;
+                var newX = trackStartX + diff;
+                
+                if (currentPage === 0 && diff > 0) {
+                    newX = trackStartX + diff * 0.3;
+                } else if (currentPage === totalPages - 1 && diff < 0) {
+                    newX = trackStartX + diff * 0.3;
+                }
+                
+                track.style.transform = 'translateX(' + newX + 'px)';
+            });
+            
+            track.addEventListener('mouseup', function(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                var diff = currentX - startX;
+                var threshold = container.offsetWidth * 0.2;
+                
+                if (diff < -threshold) {
+                    goToPage(currentPage + 1);
+                } else if (diff > threshold) {
+                    goToPage(currentPage - 1);
+                } else {
+                    goToPage(currentPage);
+                }
+            });
+            
+            track.addEventListener('mouseleave', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    goToPage(currentPage);
+                }
+            });
+            
+            // Пересчёт при повороте экрана
+            window.addEventListener('resize', function() {
+                updateUI(currentPage, false);
+            });
+            
+            // Инициализация
+            updateUI(0, false);
+            console.log('✅ Swipe guide ready! 6 pages.');
+        })();
+    </script>
+</body>
+</html>
