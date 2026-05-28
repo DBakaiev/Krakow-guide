@@ -6,952 +6,266 @@
     <title>Kraków • Dmytro's Taxi Guide</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
-            background: #0B0C0E;
-            color: #EAE8E3;
-            line-height: 1.5;
-            min-height: 100vh;
-            -webkit-tap-highlight-color: transparent;
-            overscroll-behavior: none;
-            overflow-x: hidden;
-            touch-action: pan-y;
-        }
-
-        .container {
-            max-width: 500px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 20px 16px 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            min-height: 100vh;
-        }
-
-        /* ----- HEADER ----- */
-        .header {
-            text-align: left;
-            border-left: 4px solid #F5C542;
-            padding-left: 16px;
-        }
-
-        .header .taxi-icon {
-            font-size: 2.4rem;
-            color: #F5C542;
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .header h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #FFFFFF;
-            line-height: 1.2;
-        }
-
-        .header .subtitle {
-            color: #A6A29A;
-            font-size: 0.95rem;
-            font-weight: 400;
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .header .subtitle i {
-            color: #F5C542;
-            font-size: 0.9rem;
-        }
-
-        /* ----- PAGE INDICATOR (точки) ----- */
-        .page-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 4px 0;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #2C2E33;
-            transition: all 0.3s ease;
-        }
-
-        .dot.active {
-            background: #F5C542;
-            width: 28px;
-            border-radius: 10px;
-        }
-
-        .page-label {
-            color: #7D7A73;
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-align: center;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            transition: color 0.3s;
-        }
-
-        /* ----- WHATSAPP CONTACT BOX ----- */
-        .contact-box {
-            background: #15171B;
-            border: 1px solid #25D366;
-            border-radius: 20px;
-            padding: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            box-shadow: 0 0 20px rgba(37, 211, 102, 0.15);
-        }
-
-        .contact-box .driver-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .contact-box .driver-info i {
-            font-size: 2.2rem;
-            color: #F5C542;
-        }
-
-        .contact-box .driver-text strong {
-            color: #FFFFFF;
-            font-size: 1rem;
-            display: block;
-        }
-
-        .contact-box .driver-text span {
-            color: #A6A29A;
-            font-size: 0.85rem;
-        }
-
-        .whatsapp-btn {
-            background: #25D366;
-            color: #0B0C0E;
-            padding: 14px 22px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
-            min-height: 44px;
-            outline: none;
+            background: #0B0C0E; color: #EAE8E3; line-height: 1.5;
+            padding: 20px 16px 40px; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
             -webkit-tap-highlight-color: transparent;
         }
-
-        .whatsapp-btn:active {
-            background: #1da851;
-            transform: scale(0.96);
-        }
-
-        /* ----- SWIPE CONTAINER ----- */
-        .swipe-container {
-            position: relative;
-            overflow: hidden;
-            touch-action: pan-y;
-            user-select: none;
-            -webkit-user-select: none;
-            min-height: 300px;
-        }
-
-        .swipe-track {
-            display: flex;
-            transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            will-change: transform;
-        }
-
-        .swipe-page {
-            flex: 0 0 100%;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding-right: 0;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #FFFFFF;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 2px solid #2C2E33;
-            padding-bottom: 12px;
-        }
-
-        .section-title i {
-            color: #F5C542;
-            font-size: 1.4rem;
-            width: 28px;
-            text-align: center;
-        }
-
-        /* ----- CARDS ----- */
-        .card {
-            background: #15171B;
-            border: 1px solid #23262B;
-            border-radius: 20px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card h3 {
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #FFFFFF;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card h3 i {
-            color: #F5C542;
-            font-size: 1rem;
-            width: 20px;
-        }
-
-        .card .badge {
-            background: #23262B;
-            color: #A6A29A;
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 20px;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-        }
-
-        .card p {
-            color: #B1ADA4;
-            font-size: 0.9rem;
-            margin-top: 2px;
-        }
-
-        .card .address-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 4px;
-            border-top: 1px solid #23262B;
-            padding-top: 10px;
-        }
-
-        .card .address {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            color: #7D7A73;
-        }
-
-        .card .address i {
-            font-size: 0.75rem;
-            color: #F5C542;
-        }
-
-        .maps-link {
-            background: #1A1C20;
-            border: 1px solid #2C2E33;
-            color: #F5C542;
-            padding: 10px 16px;
-            border-radius: 30px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            min-height: 44px;
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .maps-link:active {
-            background: #F5C542;
-            color: #0B0C0E;
-            border-color: #F5C542;
-        }
-
-        /* ----- TRIP CARD ----- */
-        .trip-card {
-            background: #15171B;
-            border: 1px solid #F5C54240;
-            border-radius: 20px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
-
-        .trip-highlight {
-            background: #F5C54215;
-            border: 1px solid #F5C54230;
-            border-radius: 14px;
-            padding: 14px;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.85rem;
-            color: #F5C542;
-        }
-
-        .trip-highlight i {
-            font-size: 1.3rem;
-        }
-
-        .highlight {
-            color: #F5C542;
-            font-weight: 500;
-        }
-
-        /* ----- SWIPE HINT ----- */
-        .swipe-hint {
-            color: #4A4945;
-            font-size: 0.75rem;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            animation: hintPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes hintPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        /* ----- FLOATING WHATSAPP ----- */
-        .floating-whatsapp {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #25D366;
-            color: #0B0C0E;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5);
-            text-decoration: none;
-            z-index: 999;
-            border: 2px solid #1da851;
-        }
-
-        .floating-whatsapp:active {
-            transform: scale(0.9);
-        }
-
-        /* ----- FOOTER ----- */
-        .footer-note {
-            background: #1A1C20;
-            border-radius: 20px;
-            padding: 16px 18px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid #2C2E33;
-            color: #CBC7BF;
-            font-size: 0.9rem;
-        }
-
-        .footer-note i {
-            font-size: 1.5rem;
-            color: #F5C542;
-        }
-
-        .footer-note strong {
-            color: #FFFFFF;
-        }
-
-        @media (max-width: 380px) {
-            .whatsapp-btn {
-                padding: 12px 16px;
-                font-size: 0.8rem;
-            }
-        }
+        .container { max-width: 500px; width: 100%; display: flex; flex-direction: column; gap: 20px; }
+        .header { text-align: left; border-left: 4px solid #F5C542; padding-left: 16px; }
+        .header .taxi-icon { font-size: 2.4rem; color: #F5C542; margin-bottom: 6px; display: block; }
+        .header h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.5px; color: #FFFFFF; line-height: 1.2; }
+        .header .subtitle { color: #A6A29A; font-size: 0.95rem; font-weight: 400; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+        .header .subtitle i { color: #F5C542; font-size: 0.9rem; }
+        .lang-switcher { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+        .lang-btn { background: #1A1C20; border: 1px solid #2C2E33; color: #A6A29A; padding: 8px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.2s; outline: none; min-height: 36px; }
+        .lang-btn.active { background: #F5C542; border-color: #F5C542; color: #0B0C0E; font-weight: 700; }
+        .nav-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+        .pill { background: #1A1C20; border: 1px solid #2C2E33; color: #CBC7BF; padding: 8px 10px; border-radius: 40px; font-size: 0.73rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 5px; min-height: 44px; outline: none; }
+        .pill i { font-size: 0.75rem; color: #F5C542; pointer-events: none; }
+        .pill span { pointer-events: none; }
+        .pill.active { background: #F5C542 !important; border-color: #F5C542 !important; color: #0B0C0E !important; font-weight: 600; }
+        .pill.active i { color: #0B0C0E !important; }
+        .section { display: none; flex-direction: column; gap: 14px; animation: fadeIn 0.25s ease; }
+        .section.active-section { display: flex; }
+        @keyframes fadeIn { from { opacity: 0.5; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .section-title { font-size: 1.5rem; font-weight: 600; color: #FFFFFF; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #2C2E33; padding-bottom: 12px; }
+        .section-title i { color: #F5C542; font-size: 1.4rem; width: 28px; text-align: center; }
+        .card { background: #15171B; border: 1px solid #23262B; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; }
+        .card h3 { font-size: 1.15rem; font-weight: 600; color: #FFFFFF; display: flex; align-items: center; gap: 8px; }
+        .card h3 i { color: #F5C542; font-size: 1rem; width: 20px; }
+        .card .badge { background: #23262B; color: #A6A29A; font-size: 0.65rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; white-space: nowrap; }
+        .card p { color: #B1ADA4; font-size: 0.9rem; margin-top: 2px; }
+        .card .address-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 4px; border-top: 1px solid #23262B; padding-top: 10px; }
+        .card .address { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #7D7A73; }
+        .card .address i { font-size: 0.75rem; color: #F5C542; }
+        .maps-link { background: #1A1C20; border: 1px solid #2C2E33; color: #F5C542; padding: 10px 16px; border-radius: 30px; font-size: 0.78rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; min-height: 44px; }
+        .maps-link:active { background: #F5C542; color: #0B0C0E; }
+        .trip-card { background: #15171B; border: 1px solid #F5C54240; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+        .trip-highlight { background: #F5C54215; border: 1px solid #F5C54230; border-radius: 14px; padding: 14px; margin-top: 8px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #F5C542; }
+        .trip-highlight i { font-size: 1.3rem; }
+        .highlight { color: #F5C542; font-weight: 500; }
+        .contact-box { background: #15171B; border: 1px solid #25D366; border-radius: 20px; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .contact-box .driver-info { display: flex; align-items: center; gap: 12px; }
+        .contact-box .driver-info i { font-size: 2.2rem; color: #F5C542; }
+        .contact-box .driver-text strong { color: #FFFFFF; font-size: 1rem; display: block; }
+        .contact-box .driver-text span { color: #A6A29A; font-size: 0.85rem; }
+        .whatsapp-btn { background: #25D366; color: #0B0C0E; padding: 14px 22px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; min-height: 44px; }
+        .whatsapp-btn:active { background: #1da851; }
+        .floating-whatsapp { position: fixed; bottom: 24px; right: 24px; background: #25D366; color: #0B0C0E; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5); text-decoration: none; z-index: 999; border: 2px solid #1da851; }
+        .footer-note { background: #1A1C20; border-radius: 20px; padding: 16px 18px; display: flex; align-items: center; gap: 12px; border: 1px solid #2C2E33; color: #CBC7BF; font-size: 0.9rem; }
+        .footer-note i { font-size: 1.5rem; color: #F5C542; }
+        .footer-note strong { color: #FFFFFF; }
+        .instruction { color: #4A4945; font-size: 0.7rem; text-align: center; margin-top: -10px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <i class="fas fa-taxi taxi-icon"></i>
             <h1>Kraków <span style="font-weight:300; color:#F5C542;">Guide</span></h1>
-            <div class="subtitle">
-                <i class="fas fa-map-pin"></i> Your personal guide by Dmytro
-            </div>
+            <div class="subtitle" data-key="subtitle"><i class="fas fa-map-pin"></i> Your personal guide by Dmytro</div>
         </div>
 
-        <!-- CONTACT BOX -->
+        <div class="lang-switcher" id="langSwitcher">
+            <button class="lang-btn active" data-lang="en">🇬🇧 EN</button>
+            <button class="lang-btn" data-lang="pl">🇵🇱 PL</button>
+            <button class="lang-btn" data-lang="es">🇪🇸 ES</button>
+            <button class="lang-btn" data-lang="uk">🇺🇦 UK</button>
+        </div>
+
         <div class="contact-box">
-            <div class="driver-info">
-                <i class="fas fa-user-circle"></i>
-                <div class="driver-text">
-                    <strong>Dmytro — Your Driver</strong>
-                    <span>Text or call anytime</span>
-                </div>
+            <div class="driver-info"><i class="fas fa-user-circle"></i><div class="driver-text"><strong data-key="driver_name">Dmytro — Your Driver</strong><span data-key="driver_text">Text or call anytime</span></div></div>
+            <a href="https://wa.me/48888675462?text=Hello%20Dmytro!%20I'm%20interested%20in%20a%20ride%20around%20Kraków" class="whatsapp-btn" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+
+        <div class="nav-pills" id="navPills">
+            <button class="pill active" data-section="photo" type="button"><i class="fas fa-camera-retro"></i> <span data-key="tab_photo">Photo</span></button>
+            <button class="pill" data-section="history" type="button"><i class="fas fa-landmark"></i> <span data-key="tab_history">History</span></button>
+            <button class="pill" data-section="restaurants" type="button"><i class="fas fa-utensils"></i> <span data-key="tab_restaurants">Restaurants</span></button>
+            <button class="pill" data-section="pubs" type="button"><i class="fas fa-beer-mug-empty"></i> <span data-key="tab_pubs">Pubs</span></button>
+            <button class="pill" data-section="views" type="button"><i class="fas fa-binoculars"></i> <span data-key="tab_views">Views</span></button>
+            <button class="pill" data-section="auschwitz" type="button"><i class="fas fa-memorial"></i> <span data-key="tab_auschwitz">Auschwitz</span></button>
+            <button class="pill" data-section="wieliczka" type="button"><i class="fas fa-gem"></i> <span data-key="tab_wieliczka">Wieliczka</span></button>
+            <button class="pill" data-section="zakopane" type="button"><i class="fas fa-mountain"></i> <span data-key="tab_zakopane">Zakopane</span></button>
+        </div>
+        <div class="instruction" data-key="instruction"><i class="fas fa-hand-pointer"></i> tap a category above</div>
+
+        <!-- ==================== PHOTO ==================== -->
+        <div class="section active-section" id="section-photo">
+            <div class="section-title"><i class="fas fa-camera-retro"></i> <span data-key="photo_title">Instagram Spots</span></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-water"></i> Zakrzówek</h3><span class="badge" data-key="badge_top">top pick</span></div><p data-key="photo_zakrzowek">Turquoise lakes in a former quarry. Viewing platforms and cliffs — perfect for stunning shots.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Twardowskiego, Zakrzówek Park</div><a href="https://maps.app.goo.gl/J3TPJ2zbw8kPJPnKA" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-heart"></i> Kazimierz</h3><span class="badge" data-key="badge_vibe">vibe</span></div><p data-key="photo_kazimierz">Józefa Street, Plac Nowy and the Bernatka Bridge with love locks. Soul of the old Jewish Quarter.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Plac Nowy, Kazimierz</div><a href="https://maps.app.goo.gl/J4YESNpDhU2EFfVG8" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-crown"></i> Kanonicza Street</h3></div><p data-key="photo_kanonicza">One of the most photogenic streets at the foot of Wawel. Few tourists, perfect light.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Kanonicza</div><a href="https://maps.app.goo.gl/FW2UQnRRJgnvVkRj7" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-church"></i> Tyniec Abbey</h3></div><p data-key="photo_tyniec">Benedictine abbey overlooking the Vistula. 15 minutes from centre, stunning river panorama.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Opactwo Benedyktynów, Tyniec</div><a href="https://maps.app.goo.gl/bMTu2PXeGzfCBzMa7" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+        </div>
+
+        <!-- ==================== HISTORY ==================== -->
+        <div class="section" id="section-history">
+            <div class="section-title"><i class="fas fa-landmark"></i> <span data-key="history_title">Must-See History</span></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-chess-king"></i> Wawel Hill</h3><span class="badge" data-key="badge_heart">heart</span></div><p data-key="history_wawel">Royal Castle & Cathedral, burial place of kings. Postcard Vistula view at sunset.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Wawel 5</div><a href="https://maps.app.goo.gl/tivSHKJis4BCyvNQ7" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-city"></i> Main Market Square</h3></div><p data-key="history_square">Europe's largest medieval square. St. Mary's Basilica, Veit Stoss altarpiece, hourly bugle call.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Rynek Główny</div><a href="https://maps.app.goo.gl/iV9tWEkjzFEs2Sef8" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-archway"></i> Underground Market Museum</h3></div><p data-key="history_underground">Interactive museum under the square — walk on 12th-13th century medieval cobblestones.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Rynek Główny 1</div><a href="https://maps.app.goo.gl/2hsH1p8RDhULgoYp7" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-factory"></i> Schindler's Factory</h3></div><p data-key="history_schindler">Kraków under Nazi occupation and the story of those saved by Oskar Schindler.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Lipowa 4</div><a href="https://maps.app.goo.gl/pDYaAoEBiRfTk3ZEA" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+        </div>
+
+        <!-- ==================== RESTAURANTS ==================== -->
+        <div class="section" id="section-restaurants">
+            <div class="section-title"><i class="fas fa-utensils"></i> <span data-key="restaurants_title">Restaurants</span></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-duck"></i> Czarna Kaczka</h3><span class="badge" data-key="badge_polish">polish</span></div><p data-key="rest_czarna">Famous for roast duck served with apples and cranberry. Traditional Polish dishes in a cosy setting.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Poselska 22</div><a href="https://maps.app.goo.gl/NkQ4cMt7LmPuWwsm8" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-star"></i> Starka</h3><span class="badge" data-key="badge_polish">polish</span></div><p data-key="rest_starka">Homemade Polish cuisine in Kazimierz. Famous for their flavoured vodkas and slow-cooked meats.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Józefa 14</div><a href="https://maps.app.goo.gl/fjdUAWXyxy4LXMQr5" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-mountain"></i> Morskie Oko</h3><span class="badge" data-key="badge_highlander">highlander</span></div><p data-key="rest_morskie">Traditional highlander cuisine from the Tatra region. Hearty portions, grilled oscypek, lamb dishes.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Plac Szczepański 8</div><a href="https://maps.app.goo.gl/yN9Zh4bYGqhTawmp7" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-egg"></i> Pierwszy Stopień</h3><span class="badge" data-key="badge_breakfast">breakfast</span></div><p data-key="rest_pierwszy">Great spot for breakfast and brunch. Fresh juices, eggs benedict, pancakes. Healthy and delicious.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Dietla 47</div><a href="https://maps.app.goo.gl/aFx1gdWofC7CKDRb8" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-fire"></i> Sioux</h3><span class="badge" data-key="badge_steakhouse">steakhouse</span></div><p data-key="rest_sioux">American-style steakhouse with premium cuts. Burgers, ribs, and excellent whiskey selection.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Rynek Główny 22</div><a href="https://maps.app.goo.gl/BeHwLo9U2DsPJhN69" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-rose"></i> Pod Różą</h3><span class="badge" data-key="badge_finedining">fine dining</span></div><p data-key="rest_roza">Elegant restaurant in a historic hotel. Refined Polish and European cuisine, excellent wine list.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Floriańska 14</div><a href="https://maps.app.goo.gl/yN4iTqmFdzN8z19U9" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-paw"></i> Tawerna Wilczy Dół</h3><span class="badge" data-key="badge_medieval">medieval</span></div><p data-key="rest_tawerna">Medieval-style tavern with mead and rustic dishes. Live music, themed interior, unique atmosphere.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Grodzka 22</div><a href="https://maps.app.goo.gl/EhTCZYD6v2Sn2M9eA" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-flower"></i> Amarylis</h3><span class="badge" data-key="badge_modern">modern</span></div><p data-key="rest_amarylis">Contemporary Polish cuisine with seasonal ingredients. Beautiful presentation, tasting menus available.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Karmelicka 20</div><a href="https://maps.app.goo.gl/pPM3xbsEqzVZ7WiR6" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+        </div>
+
+        <!-- ==================== PUBS ==================== -->
+        <div class="section" id="section-pubs">
+            <div class="section-title"><i class="fas fa-beer-mug-empty"></i> <span data-key="pubs_title">Pubs & Bars</span></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-paw"></i> House of Beer</h3><span class="badge" data-key="badge_craftbeer">craft beer</span></div><p data-key="pub_hob">Huge selection of Polish craft beers on tap and in bottles. Knowledgeable staff, relaxed atmosphere.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Świętego Krzyża 17</div><a href="https://maps.app.goo.gl/FF8Rhssa9phfKbFD9" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-tap"></i> Multi Qlti Tap Bar</h3><span class="badge" data-key="badge_multitap">multitap</span></div><p data-key="pub_multi">Multi-tap bar with 24 rotating craft beers. Industrial vibe, beer geeks' paradise in Kazimierz.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Szeroka 22</div><a href="https://maps.app.goo.gl/nhRuP9fb5iSWnaee9" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-beer"></i> C.K. Browar</h3><span class="badge" data-key="badge_brewery">brewery</span></div><p data-key="pub_ck">Underground brewery pub with house-brewed beers. Spacious cellars, traditional Polish bar snacks.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Podwale 7</div><a href="https://maps.app.goo.gl/UsoqiHGapffUATmM9" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-paintbrush"></i> Viva la Pinta</h3><span class="badge" data-key="badge_craftart">craft & art</span></div><p data-key="pub_viva">Art-filled craft beer bar with unique murals. Great tap list, also serves vegan bar food.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Floriańska 8</div><a href="https://maps.app.goo.gl/q2Cxvkj1X2BHaRgN8" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-music"></i> Free Pub</h3><span class="badge" data-key="badge_livemusic">live music</span></div><p data-key="pub_free">Rock and alternative pub with live music nights. Affordable drinks, unpretentious student vibe.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Floriańska 26</div><a href="https://maps.app.goo.gl/xP3JkmtF2dMP2q9k9" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-couch"></i> Eszeweria</h3><span class="badge" data-key="badge_bohemian">bohemian</span></div><p data-key="pub_eszeweria">Bohemian candlelit bar with mismatched vintage furniture. Perfect for late-night conversations, absinthe.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Józefa 9</div><a href="https://maps.app.goo.gl/92KhmCCf15Hz6mN96" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-martini-glass-citrus"></i> Trzcina Cocktail Bar</h3><span class="badge" data-key="badge_cocktails">cocktails</span></div><p data-key="pub_trzcina">Stylish cocktail bar with creative drinks and a speakeasy vibe. Expert bartenders, premium spirits.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Sienna 7</div><a href="https://maps.app.goo.gl/LP4WYthi19uDkVFz8" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-rabbit"></i> William Rabbit & Co</h3><span class="badge" data-key="badge_speakeasy">speakeasy</span></div><p data-key="pub_rabbit">Hidden speakeasy with expertly crafted cocktails. Alice in Wonderland inspired interior.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> ul. Bracka 7</div><a href="https://maps.app.goo.gl/SaqKAfx5RWX63MiQ8" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+        </div>
+
+        <!-- ==================== VIEWS ==================== -->
+        <div class="section" id="section-views">
+            <div class="section-title"><i class="fas fa-binoculars"></i> <span data-key="views_title">Best Viewpoints</span></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-mound"></i> Krakus Mound</h3><span class="badge" data-key="badge_free">free</span></div><p data-key="views_krakus">Hill in Podgórze. Best free panorama of the Old Town from the south.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Kopiec Krakusa, Podgórze</div><a href="https://maps.app.goo.gl/EnsxEBHNehtrCWEUA" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-monument"></i> Kościuszko Mound</h3></div><p data-key="views_kosciuszko">360° panorama: Wawel to Błonia. Paid entry but views are priceless.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> al. Waszyngtona 1</div><a href="https://maps.app.goo.gl/RvBsXELYhTMGxXPW9" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-bell"></i> St. Mary's Basilica Tower</h3></div><p data-key="views_tower">Bird's eye view of Market Square. Spot tower details and hear the bugle call.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Plac Mariacki 5</div><a href="https://maps.app.goo.gl/X3BkETuESv6SCS2n8" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+        </div>
+
+        <!-- ==================== AUSCHWITZ ==================== -->
+        <div class="section" id="section-auschwitz">
+            <div class="section-title"><i class="fas fa-memorial"></i> <span data-key="auschwitz_title">Auschwitz-Birkenau</span></div>
+            <div class="trip-card">
+                <div class="card-header"><h3><i class="fas fa-train"></i> Auschwitz I & Auschwitz II-Birkenau</h3><span class="badge" data-key="badge_mustvisit">must visit</span></div>
+                <p data-key="auschwitz_desc">Former Nazi concentration and extermination camp. UNESCO World Heritage Site and powerful memorial to Holocaust victims.</p>
+                <p style="color:#A6A29A; font-size:0.8rem; margin-top:4px;"><i class="fas fa-info-circle" style="color:#F5C542;"></i> <span data-key="auschwitz_info">Entry is free but advance reservation required. Tours ~3.5 hrs. Distance: 70 km (~1h 15min) from Kraków.</span></p>
+                <div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Więźniów Oświęcimia 20, Oświęcim</div><a href="https://maps.app.goo.gl/5pGqvHXzGEBU4qjy6" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div>
+                <div class="trip-highlight"><i class="fas fa-taxi"></i><div><span data-key="auschwitz_ride">Need a ride? I offer direct transfers to Auschwitz and back. Contact me on WhatsApp!</span></div></div>
             </div>
-            <a href="https://wa.me/48888675462?text=Hello%20Dmytro!%20I'm%20interested%20in%20a%20ride%20around%20Kraków" 
-               class="whatsapp-btn" target="_blank" rel="noopener">
-                <i class="fab fa-whatsapp"></i> WhatsApp
-            </a>
         </div>
 
-        <!-- Page indicator -->
-        <div>
-            <div class="page-label" id="pageLabel">Photo Spots</div>
-            <div class="page-indicator" id="pageIndicator">
-                <div class="dot active"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
+        <!-- ==================== WIELICZKA ==================== -->
+        <div class="section" id="section-wieliczka">
+            <div class="section-title"><i class="fas fa-gem"></i> <span data-key="wieliczka_title">Wieliczka Salt Mine</span></div>
+            <div class="trip-card">
+                <div class="card-header"><h3><i class="fas fa-gem"></i> Wieliczka Salt Mine</h3><span class="badge" data-key="badge_unesco">UNESCO</span></div>
+                <p data-key="wieliczka_desc">One of the world's oldest salt mines, a UNESCO World Heritage Site. Stunning underground chambers, chapels carved in salt, and crystal-clear brine lakes.</p>
+                <p style="color:#A6A29A; font-size:0.8rem; margin-top:4px;"><i class="fas fa-info-circle" style="color:#F5C542;"></i> <span data-key="wieliczka_info">Entry requires a guided tour (~3 hrs). Distance: 15 km (~30 min) from Kraków. Temperature underground: ~14°C year-round — bring a jacket!</span></p>
+                <div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Daniłowicza 10, Wieliczka</div><a href="https://maps.app.goo.gl/kxHrxbq3xsUdYFLp9" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div>
+                <div class="trip-highlight"><i class="fas fa-taxi"></i><div><span data-key="wieliczka_ride">Need a ride? I offer transfers to Wieliczka and back. Contact me on WhatsApp!</span></div></div>
             </div>
         </div>
 
-        <!-- Swipe hint -->
-        <div class="swipe-hint">
-            <i class="fas fa-arrow-left"></i> Swipe left / right to explore <i class="fas fa-arrow-right"></i>
+        <!-- ==================== ZAKOPANE ==================== -->
+        <div class="section" id="section-zakopane">
+            <div class="section-title"><i class="fas fa-mountain"></i> <span data-key="zakopane_title">Zakopane & Tatra Mountains</span></div>
+            <div class="trip-card">
+                <div class="card-header"><h3><i class="fas fa-snowflake"></i> Zakopane</h3><span class="badge" data-key="badge_daytrip">day trip</span></div>
+                <p data-key="zakopane_desc">Poland's most popular mountain resort. Wooden architecture, oscypek cheese, stunning alpine scenery.</p>
+                <p style="color:#A6A29A; font-size:0.8rem; margin-top:4px;"><i class="fas fa-info-circle" style="color:#F5C542;"></i> <span data-key="zakopane_info">Distance: 110 km (~1h 45min). Perfect for a full day — hiking, skiing, views.</span></p>
+                <div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Zakopane, Tatra Mountains</div><a href="https://maps.app.goo.gl/1qGFTeXHqx7DzpRW6" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div>
+            </div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-cable-car"></i> Gubałówka Hill</h3></div><p data-key="zakopane_gubalowka">Funicular to panoramic Tatra views. Restaurants, shops, summer slide at the summit.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Na Gubałówkę, Zakopane</div><a href="https://maps.app.goo.gl/8xKueUiF9sWsfHq38" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-road"></i> Krupówki Street</h3></div><p data-key="zakopane_krupowki">Main street with restaurants, shops, and oscypek cheese stalls.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Krupówki, Zakopane</div><a href="https://maps.app.goo.gl/HrHGN6ybCVQLTeER7" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-water"></i> Morskie Oko</h3><span class="badge" data-key="badge_iconic">iconic</span></div><p data-key="zakopane_morskie">Emerald lake surrounded by 2,500m peaks. 2-hour walk or horse carriage from Palenica.</p><div class="address-row"><div class="address"><i class="fas fa-location-dot"></i> Morskie Oko, Tatra National Park</div><a href="https://maps.app.goo.gl/9G1Bwv2CbbBHJHtv7" class="maps-link" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Maps</a></div></div>
+            <div class="trip-highlight"><i class="fas fa-taxi"></i><div><span data-key="zakopane_ride">Day trip to Zakopane? Comfortable transfers with scenic stops. Message me on WhatsApp!</span></div></div>
         </div>
 
-        <!-- SWIPE CONTAINER -->
-        <div class="swipe-container" id="swipeContainer">
-            <div class="swipe-track" id="swipeTrack">
-                
-                <!-- PAGE 0: Photo -->
-                <div class="swipe-page" data-index="0">
-                    <div class="section-title">
-                        <i class="fas fa-camera-retro"></i> Instagram Spots
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-water"></i> Zakrzówek</h3>
-                            <span class="badge">top pick</span>
-                        </div>
-                        <p>Turquoise lakes in a former quarry. Viewing platforms and cliffs — perfect for stunning shots.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> ul. Twardowskiego, Zakrzówek Park</div>
-                            <a href="https://www.google.com/maps/place/Zakrz%C3%B3wek,+Krak%C3%B3w/@50.0384,19.9130,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-heart"></i> Kazimierz</h3>
-                            <span class="badge">vibe</span>
-                        </div>
-                        <p>Józefa Street, Plac Nowy and the Bernatka Bridge with love locks. The soul of the old Jewish Quarter.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Kazimierz, around Plac Nowy</div>
-                            <a href="https://www.google.com/maps/place/Plac+Nowy,+Krak%C3%B3w/@50.0518,19.9445,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-crown"></i> Kanonicza Street</h3>
-                        </div>
-                        <p>One of the most photogenic streets at the foot of Wawel. Few tourists, perfect light.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> ul. Kanonicza</div>
-                            <a href="https://www.google.com/maps/place/Kanonicza,+Krak%C3%B3w/@50.0567,19.9368,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-church"></i> Tyniec Abbey</h3>
-                        </div>
-                        <p>Benedictine abbey overlooking the Vistula River. Just 15 minutes from the centre, river panorama.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Opactwo Benedyktynów, Tyniec</div>
-                            <a href="https://www.google.com/maps/place/Tyniec+Benedictine+Abbey/@50.0187,19.8016,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGE 1: History -->
-                <div class="swipe-page" data-index="1">
-                    <div class="section-title">
-                        <i class="fas fa-landmark"></i> Must-See History
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-chess-king"></i> Wawel Hill</h3>
-                            <span class="badge">heart</span>
-                        </div>
-                        <p>The Royal Castle and Cathedral, burial place of kings. Postcard-perfect Vistula view at sunset.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Wawel 5</div>
-                            <a href="https://www.google.com/maps/place/Wawel+Castle/@50.0540,19.9354,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-city"></i> Main Market Square</h3>
-                        </div>
-                        <p>Europe's largest medieval square. St. Mary's Basilica, Veit Stoss altarpiece and the hourly bugle call.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Rynek Główny</div>
-                            <a href="https://www.google.com/maps/place/Main+Market+Square/@50.0614,19.9372,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-archway"></i> Underground Market Museum</h3>
-                        </div>
-                        <p>Interactive museum beneath the square — walk on original 12th–13th century medieval cobblestones.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Rynek Główny 1</div>
-                            <a href="https://www.google.com/maps/place/Rynek+Underground+Museum/@50.0616,19.9373,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-factory"></i> Schindler's Factory</h3>
-                        </div>
-                        <p>Museum about Kraków under Nazi occupation and the story of those saved by Oskar Schindler.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> ul. Lipowa 4</div>
-                            <a href="https://www.google.com/maps/place/Schindler's+Factory/@50.0474,19.9617,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGE 2: Food -->
-                <div class="swipe-page" data-index="2">
-                    <div class="section-title">
-                        <i class="fas fa-utensils"></i> Traditional Cuisine
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-bowl-food"></i> Kogel Mogel</h3>
-                            <span class="badge">must eat</span>
-                        </div>
-                        <p>Polish classics with a restaurant twist. Famous borscht, cured lard, pierogi. Very cosy atmosphere.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> ul. Sienna 12</div>
-                            <a href="https://www.google.com/maps/place/Kogel+Mogel/@50.0602,19.9387,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-mountain-sun"></i> Zielone Tarasy</h3>
-                        </div>
-                        <p>Panoramic restaurant with traditional meat and vegetarian dishes. View of the Beskids on clear days.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> al. Słowackiego 64</div>
-                            <a href="https://www.google.com/maps/place/Zielone+Tarasy/@50.0771,19.9247,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-castle"></i> U Ziyada</h3>
-                        </div>
-                        <p>Restaurant in Przegorzały Castle. Romantic dinner with a view of the Vistula bend.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> ul. Jodłowa 13</div>
-                            <a href="https://www.google.com/maps/place/U+Ziyada/@50.0488,19.8735,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGE 3: Views -->
-                <div class="swipe-page" data-index="3">
-                    <div class="section-title">
-                        <i class="fas fa-binoculars"></i> Best Viewpoints
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-mound"></i> Krakus Mound</h3>
-                            <span class="badge">free</span>
-                        </div>
-                        <p>A hill in Podgórze. The best free panorama of the Old Town from the south.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Kopiec Krakusa, Podgórze</div>
-                            <a href="https://www.google.com/maps/place/Krakus+Mound/@50.0381,19.9584,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-monument"></i> Kościuszko Mound</h3>
-                        </div>
-                        <p>360° panorama: from Wawel to Błonia. Paid entry but the views are priceless.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> al. Waszyngtona 1</div>
-                            <a href="https://www.google.com/maps/place/Ko%C5%9Bciuszko+Mound/@50.0529,19.8937,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-bell"></i> St. Mary's Basilica Tower</h3>
-                        </div>
-                        <p>Bird's eye view of the Market Square. Spot the tower details and hear the bugle call up close.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Plac Mariacki 5</div>
-                            <a href="https://www.google.com/maps/place/St.+Mary's+Basilica/@50.0617,19.9391,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGE 4: Auschwitz -->
-                <div class="swipe-page" data-index="4">
-                    <div class="section-title">
-                        <i class="fas fa-memorial"></i> Auschwitz-Birkenau
-                    </div>
-                    
-                    <div class="trip-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-train"></i> Auschwitz I & Auschwitz II-Birkenau</h3>
-                            <span class="badge">must visit</span>
-                        </div>
-                        <p>The former Nazi concentration and extermination camp. A UNESCO World Heritage Site and a powerful memorial to the victims of the Holocaust.</p>
-                        <p style="color:#A6A29A; font-size:0.8rem; margin-top:4px;">
-                            <i class="fas fa-info-circle" style="color:#F5C542;"></i> 
-                            Entry is <strong>free</strong> but <span class="highlight">advance reservation</span> required. 
-                            Tours ~<span class="highlight">3.5 hrs</span>. Distance: <span class="highlight">70 km (~1h 15min)</span> from Kraków.
-                        </p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Więźniów Oświęcimia 20, Oświęcim</div>
-                            <a href="https://www.google.com/maps/place/Auschwitz-Birkenau+Memorial+and+Museum/@50.0358,19.1783,14z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                        <div class="trip-highlight">
-                            <i class="fas fa-taxi"></i>
-                            <div>
-                                <strong>Need a ride?</strong> I offer direct transfers from Kraków to Auschwitz and back. 
-                                <span class="highlight">Contact me on WhatsApp</span> for details.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGE 5: Zakopane -->
-                <div class="swipe-page" data-index="5">
-                    <div class="section-title">
-                        <i class="fas fa-mountain"></i> Zakopane & Tatra Mountains
-                    </div>
-                    
-                    <div class="trip-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-snowflake"></i> Zakopane — Winter Capital</h3>
-                            <span class="badge">day trip</span>
-                        </div>
-                        <p>Poland's most popular mountain resort at the foot of the Tatra Mountains. Wooden architecture, oscypek cheese, and stunning alpine scenery.</p>
-                        <p style="color:#A6A29A; font-size:0.8rem; margin-top:4px;">
-                            <i class="fas fa-info-circle" style="color:#F5C542;"></i> 
-                            Distance: <span class="highlight">110 km (~1h 45min)</span> from Kraków. 
-                            Perfect for a full day trip — hiking, skiing, or enjoying the views.
-                        </p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Zakopane, Tatra Mountains</div>
-                            <a href="https://www.google.com/maps/place/Zakopane/@49.2992,19.9496,14z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-cable-car"></i> Gubałówka Hill</h3>
-                        </div>
-                        <p>Funicular to panoramic Tatra views. Restaurants, shops, and a summer slide at the summit.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Na Gubałówkę, Zakopane</div>
-                            <a href="https://www.google.com/maps/place/Guba%C5%82%C3%B3wka/@49.3047,19.9355,15z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-road"></i> Krupówki Street</h3>
-                        </div>
-                        <p>Main pedestrian street with restaurants, shops, and <span class="highlight">oscypek</span> cheese stalls.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Krupówki, Zakopane</div>
-                            <a href="https://www.google.com/maps/place/Krup%C3%B3wki,+Zakopane/@49.2943,19.9501,17z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-water"></i> Morskie Oko</h3>
-                            <span class="badge">iconic</span>
-                        </div>
-                        <p>Stunning emerald lake surrounded by 2,500m peaks. 2-hour walk or horse carriage from Palenica.</p>
-                        <div class="address-row">
-                            <div class="address"><i class="fas fa-location-dot"></i> Morskie Oko, Tatra National Park</div>
-                            <a href="https://www.google.com/maps/place/Morskie+Oko/@49.1972,20.0705,15z" class="maps-link" target="_blank" rel="noopener">
-                                <i class="fas fa-map-marker-alt"></i> Maps
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="trip-highlight">
-                        <i class="fas fa-taxi"></i>
-                        <div>
-                            <strong>Day trip to Zakopane?</strong> Comfortable transfers with scenic stops. 
-                            <span class="highlight">Message me on WhatsApp!</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div><!-- /swipe-track -->
-        </div><!-- /swipe-container -->
-
-        <!-- Driver's tip -->
         <div class="footer-note">
             <i class="fas fa-comment-dots"></i>
-            <div>
-                <strong>Dmytro's tip:</strong><br>
-                "Best photo without crowds — <span class="highlight">Zakrzówek</span> or <span class="highlight">Tyniec</span>. Best pierogi — <span class="highlight">Kogel Mogel</span>. Day trip? I'll drive you to <span class="highlight">Auschwitz</span> or <span class="highlight">Zakopane</span>."
-            </div>
+            <div><strong data-key="tip_label">Dmytro's tip:</strong><br><span data-key="tip_text">"Best photo without crowds — Zakrzówek. Best Polish food — Starka or Czarna Kaczka. Craft beer? House of Beer. Day trip? I'll take you anywhere!"</span></div>
         </div>
-        <div style="color:#4A4945; font-size:0.7rem; text-align:center; margin-top:4px;">
-            Dmytro — Your Kraków taxi driver • 2026
-        </div>
+        <div style="color:#4A4945; font-size:0.7rem; text-align:center; margin-top:4px;">Dmytro — Your Kraków taxi driver • 2026</div>
     </div>
 
-    <!-- FLOATING WHATSAPP -->
-    <a href="https://wa.me/48888675462?text=Hello%20Dmytro!%20I'm%20interested%20in%20a%20ride%20around%20Kraków" 
-       class="floating-whatsapp" target="_blank" rel="noopener" title="Message Dmytro">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <a href="https://wa.me/48888675462?text=Hello%20Dmytro!%20I'm%20interested%20in%20a%20ride%20around%20Kraków" class="floating-whatsapp" target="_blank" rel="noopener" title="Message Dmytro"><i class="fab fa-whatsapp"></i></a>
 
     <script>
-        // ПРОСТОЙ СВАЙП-ДВИЖОК
         (function() {
-            var track = document.getElementById('swipeTrack');
-            var container = document.getElementById('swipeContainer');
-            var dots = document.querySelectorAll('#pageIndicator .dot');
-            var label = document.getElementById('pageLabel');
-            
-            var pageNames = [
-                'Photo Spots',
-                'History',
-                'Traditional Cuisine',
-                'Best Viewpoints',
-                'Auschwitz-Birkenau',
-                'Zakopane & Tatra'
-            ];
-            
-            var totalPages = 6;
-            var currentPage = 0;
-            var startX = 0;
-            var currentX = 0;
-            var isDragging = false;
-            var trackStartX = 0;
-            
-            function updateUI(index, animate) {
-                if (animate === false) {
-                    track.style.transition = 'none';
-                } else {
-                    track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            var translations = {
+                en: {
+                    subtitle: '<i class="fas fa-map-pin"></i> Your personal guide by Dmytro',
+                    driver_name: 'Dmytro — Your Driver', driver_text: 'Text or call anytime',
+                    instruction: '<i class="fas fa-hand-pointer"></i> tap a category above',
+                    tab_photo: 'Photo', tab_history: 'History', tab_restaurants: 'Restaurants', tab_pubs: 'Pubs', tab_views: 'Views', tab_auschwitz: 'Auschwitz', tab_wieliczka: 'Wieliczka', tab_zakopane: 'Zakopane',
+                    photo_title: 'Instagram Spots', photo_zakrzowek: 'Turquoise lakes in a former quarry. Viewing platforms and cliffs — perfect for stunning shots.', photo_kazimierz: 'Józefa Street, Plac Nowy and the Bernatka Bridge with love locks. Soul of the old Jewish Quarter.', photo_kanonicza: 'One of the most photogenic streets at the foot of Wawel. Few tourists, perfect light.', photo_tyniec: 'Benedictine abbey overlooking the Vistula. 15 minutes from centre, stunning river panorama.',
+                    history_title: 'Must-See History', history_wawel: 'Royal Castle & Cathedral, burial place of kings. Postcard Vistula view at sunset.', history_square: "Europe's largest medieval square. St. Mary's Basilica, Veit Stoss altarpiece, hourly bugle call.", history_underground: 'Interactive museum under the square — walk on 12th-13th century medieval cobblestones.', history_schindler: 'Kraków under Nazi occupation and the story of those saved by Oskar Schindler.',
+                    restaurants_title: 'Restaurants', rest_czarna: 'Famous for roast duck served with apples and cranberry. Traditional Polish dishes in a cosy setting.', rest_starka: 'Homemade Polish cuisine in Kazimierz. Famous for their flavoured vodkas and slow-cooked meats.', rest_morskie: 'Traditional highlander cuisine from the Tatra region. Hearty portions, grilled oscypek, lamb dishes.', rest_pierwszy: 'Great spot for breakfast and brunch. Fresh juices, eggs benedict, pancakes. Healthy and delicious.', rest_sioux: 'American-style steakhouse with premium cuts. Burgers, ribs, and excellent whiskey selection.', rest_roza: 'Elegant restaurant in a historic hotel. Refined Polish and European cuisine, excellent wine list.', rest_tawerna: 'Medieval-style tavern with mead and rustic dishes. Live music, themed interior, unique atmosphere.', rest_amarylis: 'Contemporary Polish cuisine with seasonal ingredients. Beautiful presentation, tasting menus available.',
+                    pubs_title: 'Pubs & Bars', pub_hob: 'Huge selection of Polish craft beers on tap and in bottles. Knowledgeable staff, relaxed atmosphere.', pub_multi: "Multi-tap bar with 24 rotating craft beers. Industrial vibe, beer geeks' paradise in Kazimierz.", pub_ck: 'Underground brewery pub with house-brewed beers. Spacious cellars, traditional Polish bar snacks.', pub_viva: 'Art-filled craft beer bar with unique murals. Great tap list, also serves vegan bar food.', pub_free: 'Rock and alternative pub with live music nights. Affordable drinks, unpretentious student vibe.', pub_eszeweria: 'Bohemian candlelit bar with mismatched vintage furniture. Perfect for late-night conversations, absinthe.', pub_trzcina: 'Stylish cocktail bar with creative drinks and a speakeasy vibe. Expert bartenders, premium spirits.', pub_rabbit: 'Hidden speakeasy with expertly crafted cocktails. Alice in Wonderland inspired interior.',
+                    views_title: 'Best Viewpoints', views_krakus: 'Hill in Podgórze. Best free panorama of the Old Town from the south.', views_kosciuszko: '360° panorama: Wawel to Błonia. Paid entry but views are priceless.', views_tower: "Bird's eye view of Market Square. Spot tower details and hear the bugle call.",
+                    auschwitz_title: 'Auschwitz-Birkenau', auschwitz_desc: 'Former Nazi concentration and extermination camp. UNESCO World Heritage Site and powerful memorial to Holocaust victims.', auschwitz_info: 'Entry is free but advance reservation required. Tours ~3.5 hrs. Distance: 70 km (~1h 15min) from Kraków.', auschwitz_ride: 'Need a ride? I offer direct transfers to Auschwitz and back. Contact me on WhatsApp!',
+                    wieliczka_title: 'Wieliczka Salt Mine', wieliczka_desc: 'One of the world\'s oldest salt mines, a UNESCO World Heritage Site. Stunning underground chambers, chapels carved in salt, and crystal-clear brine lakes.', wieliczka_info: 'Entry requires a guided tour (~3 hrs). Distance: 15 km (~30 min) from Kraków. Temperature underground: ~14°C year-round — bring a jacket!', wieliczka_ride: 'Need a ride? I offer transfers to Wieliczka and back. Contact me on WhatsApp!',
+                    zakopane_title: 'Zakopane & Tatra Mountains', zakopane_desc: "Poland's most popular mountain resort. Wooden architecture, oscypek cheese, stunning alpine scenery.", zakopane_info: 'Distance: 110 km (~1h 45min). Perfect for a full day — hiking, skiing, views.', zakopane_gubalowka: 'Funicular to panoramic Tatra views. Restaurants, shops, summer slide at the summit.', zakopane_krupowki: 'Main street with restaurants, shops, and oscypek cheese stalls.', zakopane_morskie: 'Emerald lake surrounded by 2,500m peaks. 2-hour walk or horse carriage from Palenica.', zakopane_ride: 'Day trip to Zakopane? Comfortable transfers with scenic stops. Message me on WhatsApp!',
+                    badge_top: 'top pick', badge_vibe: 'vibe', badge_heart: 'heart', badge_free: 'free', badge_polish: 'polish', badge_highlander: 'highlander', badge_breakfast: 'breakfast', badge_steakhouse: 'steakhouse', badge_finedining: 'fine dining', badge_medieval: 'medieval', badge_modern: 'modern', badge_craftbeer: 'craft beer', badge_multitap: 'multitap', badge_brewery: 'brewery', badge_craftart: 'craft & art', badge_livemusic: 'live music', badge_bohemian: 'bohemian', badge_cocktails: 'cocktails', badge_speakeasy: 'speakeasy', badge_mustvisit: 'must visit', badge_unesco: 'UNESCO', badge_daytrip: 'day trip', badge_iconic: 'iconic',
+                    tip_label: "Dmytro's tip:", tip_text: '"Best photo without crowds — Zakrzówek. Best Polish food — Starka or Czarna Kaczka. Craft beer? House of Beer. Day trip? I\'ll take you to Auschwitz, Wieliczka or Zakopane!"'
+                },
+                pl: {
+                    subtitle: '<i class="fas fa-map-pin"></i> Twój osobisty przewodnik — Dmytro', driver_name: 'Dmytro — Twój Kierowca', driver_text: 'Napisz lub zadzwoń', instruction: '<i class="fas fa-hand-pointer"></i> dotknij kategorii powyżej',
+                    tab_photo: 'Zdjęcia', tab_history: 'Historia', tab_restaurants: 'Restauracje', tab_pubs: 'Puby', tab_views: 'Widoki', tab_auschwitz: 'Auschwitz', tab_wieliczka: 'Wieliczka', tab_zakopane: 'Zakopane',
+                    photo_title: 'Miejsca na Instagram', photo_zakrzowek: 'Turkusowe jeziora w dawnym kamieniołomie. Platformy widokowe i klify — idealne na zdjęcia.', photo_kazimierz: 'Ulica Józefa, Plac Nowy i most Bernatka z kłódkami. Dusza starej dzielnicy żydowskiej.', photo_kanonicza: 'Jedna z najbardziej fotogenicznych ulic u stóp Wawelu. Mało turystów, doskonałe światło.', photo_tyniec: 'Opactwo Benedyktynów nad Wisłą. 15 minut od centrum, piękna panorama rzeki.',
+                    history_title: 'Najważniejsze zabytki', history_wawel: 'Zamek Królewski i Katedra, miejsce pochówku królów. Widok na Wisłę o zachodzie słońca.', history_square: 'Największy średniowieczny rynek w Europie. Bazylika Mariacka, ołtarz Wita Stwosza, hejnał.', history_underground: 'Interaktywne muzeum pod Rynkiem — spacer po średniowiecznym bruku z XII-XIII wieku.', history_schindler: 'Kraków pod okupacją nazistowską i historia ocalonych przez Oskara Schindlera.',
+                    restaurants_title: 'Restauracje', rest_czarna: 'Słynie z pieczonej kaczki z jabłkami i żurawiną. Tradycyjna kuchnia polska w przytulnej atmosferze.', rest_starka: 'Domowa kuchnia polska na Kazimierzu. Słyną z nalewek i duszonych mięs.', rest_morskie: 'Tradycyjna kuchnia góralska. Obfite porcje, grillowany oscypek, dania z jagnięciny.', rest_pierwszy: 'Świetne miejsce na śniadanie i brunch. Świeże soki, jajka benedyktyńskie, naleśniki.', rest_sioux: 'Steakhouse w stylu amerykańskim. Burgery, żeberka i doskonały wybór whiskey.', rest_roza: 'Elegancka restauracja w zabytkowym hotelu. Wyrafinowana kuchnia polska i europejska.', rest_tawerna: 'Tawerna w średniowiecznym stylu z miodem pitnym i rustykalnymi daniami. Muzyka na żywo.', rest_amarylis: 'Nowoczesna kuchnia polska z sezonowych składników. Menu degustacyjne.',
+                    pubs_title: 'Puby i Bary', pub_hob: 'Ogromny wybór polskich piw rzemieślniczych. Kompetentny personel, swobodna atmosfera.', pub_multi: 'Multitap z 24 zmieniającymi się piwami. Industrialny klimat, raj dla piwoszy.', pub_ck: 'Podziemny browar z własnym piwem. Przestronne piwnice, tradycyjne przekąski.', pub_viva: 'Artystyczny bar z piwem rzemieślniczym i muralami. Świetne piwa i wegańskie jedzenie.', pub_free: 'Rockowy pub z muzyką na żywo. Przystępne ceny, studencki klimat.', pub_eszeweria: 'Cyrulikowy bar przy świecach z vintage\'owymi meblami. Idealny na nocne rozmowy.', pub_trzcina: 'Stylowy koktajlbar z kreatywnymi drinkami. Doświadczeni barmani, alkohole premium.', pub_rabbit: 'Ukryty speakeasy z koktajlami. Wnętrze inspirowane Alicją w Krainie Czarów.',
+                    views_title: 'Najlepsze punkty widokowe', views_krakus: 'Kopiec w Podgórzu. Najlepsza darmowa panorama Starego Miasta od południa.', views_kosciuszko: 'Panorama 360°: od Wawelu po Błonia. Płatne wejście, ale widoki bezcenne.', views_tower: 'Widok na Rynek z lotu ptaka. Zobacz detale wieży i usłysz hejnał.',
+                    auschwitz_title: 'Auschwitz-Birkenau', auschwitz_desc: 'Były nazistowski obóz koncentracyjny i zagłady. Miejsce Pamięci UNESCO, pomnik ofiar Holokaustu.', auschwitz_info: 'Wstęp bezpłatny, wymagana wcześniejsza rezerwacja. Zwiedzanie ~3,5 godz. Odległość: 70 km (~1h 15min) od Krakowa.', auschwitz_ride: 'Potrzebujesz transportu? Oferuję transfery do Auschwitz i z powrotem. Skontaktuj się przez WhatsApp!',
+                    wieliczka_title: 'Kopalnia Soli Wieliczka', wieliczka_desc: 'Jedna z najstarszych kopalni soli na świecie, wpisana na listę UNESCO. Podziemne komory, kaplice wyrzeźbione w soli i krystaliczne jeziora solankowe.', wieliczka_info: 'Wstęp z przewodnikiem (~3 godz.). Odległość: 15 km (~30 min) od Krakowa. Temperatura pod ziemią: ~14°C przez cały rok — weź kurtkę!', wieliczka_ride: 'Potrzebujesz transportu? Oferuję transfery do Wieliczki i z powrotem. Skontaktuj się przez WhatsApp!',
+                    zakopane_title: 'Zakopane i Tatry', zakopane_desc: 'Najpopularniejszy górski kurort Polski. Drewniana architektura, oscypki, alpejskie krajobrazy.', zakopane_info: 'Odległość: 110 km (~1h 45min). Idealne na całodniową wycieczkę — wędrówki, narty, widoki.', zakopane_gubalowka: 'Kolejka na Gubałówkę z panoramą Tatr. Restauracje, sklepy, letnia zjeżdżalnia.', zakopane_krupowki: 'Główny deptak z restauracjami, sklepami i straganami z oscypkami.', zakopane_morskie: 'Szmaragdowe jezioro otoczone szczytami 2500 m. 2-godzinny spacer lub bryczka z Palenicy.', zakopane_ride: 'Wycieczka do Zakopanego? Komfortowy transfer z przystankami widokowymi. Napisz na WhatsApp!',
+                    badge_top: 'hit', badge_vibe: 'klimat', badge_heart: 'serce', badge_free: 'za darmo', badge_polish: 'polska', badge_highlander: 'góralska', badge_breakfast: 'śniadania', badge_steakhouse: 'steki', badge_finedining: 'fine dining', badge_medieval: 'średniowiecze', badge_modern: 'nowoczesna', badge_craftbeer: 'kraft', badge_multitap: 'multitap', badge_brewery: 'browar', badge_craftart: 'kraft i sztuka', badge_livemusic: 'koncerty', badge_bohemian: 'artystyczny', badge_cocktails: 'koktajle', badge_speakeasy: 'speakeasy', badge_mustvisit: 'must see', badge_unesco: 'UNESCO', badge_daytrip: 'wycieczka', badge_iconic: 'ikona',
+                    tip_label: 'Rada Dmytro:', tip_text: '"Najlepsze zdjęcia bez tłumów — Zakrzówek. Najlepsza kuchnia — Starka lub Czarna Kaczka. Kraftowe piwo? House of Beer. Wycieczka? Zawiozę Cię do Auschwitz, Wieliczki lub Zakopanego!"'
+                },
+                es: {
+                    subtitle: '<i class="fas fa-map-pin"></i> Tu guía personal — Dmytro', driver_name: 'Dmytro — Tu Conductor', driver_text: 'Escribe o llama cuando quieras', instruction: '<i class="fas fa-hand-pointer"></i> toca una categoría arriba',
+                    tab_photo: 'Foto', tab_history: 'Historia', tab_restaurants: 'Restaurantes', tab_pubs: 'Bares', tab_views: 'Vistas', tab_auschwitz: 'Auschwitz', tab_wieliczka: 'Wieliczka', tab_zakopane: 'Zakopane',
+                    photo_title: 'Lugares Instagram', photo_zakrzowek: 'Lagos turquesa en una antigua cantera. Plataformas y acantilados — perfectos para fotos impresionantes.', photo_kazimierz: 'Calle Józefa, Plac Nowy y el Puente Bernatka con candados. El alma del antiguo barrio judío.', photo_kanonicza: 'Una de las calles más fotogénicas al pie de Wawel. Pocos turistas, luz perfecta.', photo_tyniec: 'Abadía benedictina sobre el Vístula. A 15 minutos del centro, increíble panorama del río.',
+                    history_title: 'Historia imprescindible', history_wawel: 'Castillo Real y Catedral, lugar de sepultura de reyes. Vista del Vístula al atardecer.', history_square: 'La plaza medieval más grande de Europa. Basílica de Santa María, retablo de Veit Stoss, trompeta.', history_underground: 'Museo interactivo bajo la plaza — camina sobre adoquines medievales del siglo XII-XIII.', history_schindler: 'Cracovia bajo ocupación nazi y la historia de los salvados por Oskar Schindler.',
+                    restaurants_title: 'Restaurantes', rest_czarna: 'Famoso por el pato asado con manzanas y arándanos. Cocina polaca tradicional en ambiente acogedor.', rest_starka: 'Cocina polaca casera en Kazimierz. Famosos por sus vodkas aromatizados y carnes cocinadas.', rest_morskie: 'Cocina tradicional montañesa de los Tatras. Porciones abundantes, oscypek a la parrilla, cordero.', rest_pierwszy: 'Gran lugar para desayuno y brunch. Zumos frescos, huevos benedictinos, tortitas.', rest_sioux: 'Asador estilo americano con cortes premium. Hamburguesas, costillas y excelente whisky.', rest_roza: 'Restaurante elegante en hotel histórico. Cocina polaca y europea refinada, excelente carta de vinos.', rest_tawerna: 'Taberna medieval con hidromiel y platos rústicos. Música en vivo, interior temático.', rest_amarylis: 'Cocina polaca contemporánea con ingredientes de temporada. Menú degustación disponible.',
+                    pubs_title: 'Bares y Pubs', pub_hob: 'Gran selección de cervezas artesanales polacas. Personal experto, ambiente relajado.', pub_multi: 'Bar multitap con 24 cervezas rotativas. Ambiente industrial, paraíso cervecero.', pub_ck: 'Cervecería subterránea con cervezas propias. Sótanos amplios, aperitivos tradicionales.', pub_viva: 'Bar de cerveza artesanal con murales únicos. También sirven comida vegana.', pub_free: 'Pub rock y alternativo con música en vivo. Precios asequibles, ambiente estudiantil.', pub_eszeweria: 'Bar bohemio a la luz de velas con muebles vintage. Perfecto para conversaciones nocturnas.', pub_trzcina: 'Bar de cócteles con bebidas creativas y ambiente speakeasy. Bármanes expertos.', pub_rabbit: 'Speakeasy oculto con cócteles artesanales. Interior inspirado en Alicia en el País de las Maravillas.',
+                    views_title: 'Mejores miradores', views_krakus: 'Colina en Podgórze. Mejor panorama gratuito del casco antiguo desde el sur.', views_kosciuszko: 'Panorama 360°: de Wawel a Błonia. Entrada de pago pero vistas inolvidables.', views_tower: 'Vista aérea de la Plaza del Mercado. Detalles de la torre y la trompeta.',
+                    auschwitz_title: 'Auschwitz-Birkenau', auschwitz_desc: 'Antiguo campo de concentración y exterminio nazi. Patrimonio de la UNESCO, memorial del Holocausto.', auschwitz_info: 'Entrada gratuita con reserva previa. Visitas ~3.5 h. Distancia: 70 km (~1h 15min) de Cracovia.', auschwitz_ride: '¿Necesitas transporte? Ofrezco traslados directos a Auschwitz. ¡Contáctame por WhatsApp!',
+                    wieliczka_title: 'Minas de Sal de Wieliczka', wieliczka_desc: 'Una de las minas de sal más antiguas del mundo, Patrimonio de la UNESCO. Impresionantes cámaras subterráneas, capillas talladas en sal y lagos de salmuera cristalina.', wieliczka_info: 'Visita guiada obligatoria (~3 h). Distancia: 15 km (~30 min) de Cracovia. Temperatura subterránea: ~14°C todo el año — ¡lleva chaqueta!', wieliczka_ride: '¿Necesitas transporte? Ofrezco traslados a Wieliczka. ¡Contáctame por WhatsApp!',
+                    zakopane_title: 'Zakopane y Montes Tatras', zakopane_desc: 'El centro turístico de montaña más popular de Polonia. Arquitectura de madera, queso oscypek, paisajes alpinos.', zakopane_info: 'Distancia: 110 km (~1h 45min). Ideal para un día completo — senderismo, esquí, vistas.', zakopane_gubalowka: 'Funicular con vistas panorámicas a los Tatras. Restaurantes, tiendas, tobogán de verano.', zakopane_krupowki: 'Calle principal con restaurantes, tiendas y puestos de queso oscypek.', zakopane_morskie: 'Lago esmeralda rodeado de picos de 2.500m. 2 horas a pie o carruaje desde Palenica.', zakopane_ride: '¿Excursión a Zakopane? Traslados cómodos con paradas panorámicas. ¡Escríbeme por WhatsApp!',
+                    badge_top: 'top', badge_vibe: 'ambiente', badge_heart: 'corazón', badge_free: 'gratis', badge_polish: 'polaco', badge_highlander: 'montañés', badge_breakfast: 'desayuno', badge_steakhouse: 'asador', badge_finedining: 'gourmet', badge_medieval: 'medieval', badge_modern: 'moderno', badge_craftbeer: 'artesanal', badge_multitap: 'multitap', badge_brewery: 'cervecería', badge_craftart: 'arte y birra', badge_livemusic: 'directo', badge_bohemian: 'bohemio', badge_cocktails: 'cócteles', badge_speakeasy: 'speakeasy', badge_mustvisit: 'visita obligada', badge_unesco: 'UNESCO', badge_daytrip: 'excursión', badge_iconic: 'icónico',
+                    tip_label: 'Consejo de Dmytro:', tip_text: '"¿La mejor foto sin multitudes? Zakrzówek. ¿Comida polaca? Starka o Czarna Kaczka. ¿Cerveza artesanal? House of Beer. ¿Excursión? ¡Te llevo a Auschwitz, Wieliczka o Zakopane!"'
+                },
+                uk: {
+                    subtitle: '<i class="fas fa-map-pin"></i> Ваш особистий гід — Dmytro', driver_name: 'Dmytro — Ваш Водій', driver_text: 'Пишіть або телефонуйте', instruction: '<i class="fas fa-hand-pointer"></i> натисніть категорію вище',
+                    tab_photo: 'Фото', tab_history: 'Історія', tab_restaurants: 'Ресторани', tab_pubs: 'Паби', tab_views: 'Огляд', tab_auschwitz: 'Аушвіц', tab_wieliczka: 'Величка', tab_zakopane: 'Закопане',
+                    photo_title: 'Місця для Instagram', photo_zakrzowek: 'Бірюзові озера в колишньому кар\'єрі. Оглядові платформи та скелі — ідеально для фото.', photo_kazimierz: 'Вулиця Юзефа, Plac Nowy та міст Бернатка із замками. Душа старого єврейського кварталу.', photo_kanonicza: 'Одна з найфотогенічніших вулиць біля підніжжя Вавеля. Мало туристів, чудове світло.', photo_tyniec: 'Бенедиктинське абатство над Віслою. 15 хвилин від центру, панорама річки.',
+                    history_title: 'Історичні місця', history_wawel: 'Королівський замок і собор, усипальниця королів. Листівковий вид на Віслу на заході сонця.', history_square: 'Найбільша середньовічна площа Європи. Маріацький костел, вівтар Віта Ствоша, хейнал.', history_underground: 'Інтерактивний музей під площею — прогулянка середньовічною бруківкою XII-XIII ст.', history_schindler: 'Краків під нацистською окупацією та історія врятованих Оскаром Шиндлером.',
+                    restaurants_title: 'Ресторани', rest_czarna: 'Відома смаженою качкою з яблуками та журавлиною. Традиційна польська кухня в затишній атмосфері.', rest_starka: 'Домашня польська кухня на Казімєжу. Славляться настоянками та тушкованим м\'ясом.', rest_morskie: 'Традиційна гуральська кухня з Татр. Великі порції, осципек на грилі, страви з ягнятини.', rest_pierwszy: 'Чудове місце для сніданку та бранчу. Свіжі соки, яйця бенедикт, млинці.', rest_sioux: 'Стейкхаус в американському стилі. Бургери, реберця, відмінний вибір віскі.', rest_roza: 'Елегантний ресторан в історичному готелі. Вишукана польська та європейська кухня.', rest_tawerna: 'Таверна в середньовічному стилі з медом та сільськими стравами. Жива музика.', rest_amarylis: 'Сучасна польська кухня з сезонних інгредієнтів. Дегустаційне меню.',
+                    pubs_title: 'Паби та Бари', pub_hob: 'Величезний вибір крафтового пива. Досвідчений персонал, розслаблена атмосфера.', pub_multi: 'Мультитап із 24 змінними пивами. Індустріальний стиль, рай для пиволюбів.', pub_ck: 'Підземна броварня з власним пивом. Просторі підвали, традиційні закуски.', pub_viva: 'Арт-бар із крафтовим пивом та муралами. Також веганська їжа.', pub_free: 'Рок-паб із живою музикою. Доступні ціни, студентська атмосфера.', pub_eszeweria: 'Богемний бар при свічках із вінтажними меблями. Для нічних розмов, абсент.', pub_trzcina: 'Стильний коктейль-бар із креативними напоями. Професійні бармени, преміум.', pub_rabbit: 'Прихований спікізі з авторськими коктейлями. Інтер\'єр у стилі Аліси в Країні Чудес.',
+                    views_title: 'Оглядові майданчики', views_krakus: 'Пагорб у Подґуже. Найкраща безкоштовна панорама Старого міста з півдня.', views_kosciuszko: 'Панорама 360°: від Вавеля до Блонь. Платний вхід, але краєвиди безцінні.', views_tower: 'Вид на Ринок з висоти пташиного польоту. Деталі вежі та звук хейналу.',
+                    auschwitz_title: 'Аушвіц-Біркенау', auschwitz_desc: 'Колишній нацистський концтабір. Пам\'ятник ЮНЕСКО, меморіал жертвам Голокосту.', auschwitz_info: 'Вхід безкоштовний, потрібне бронювання. Тур ~3,5 год. Відстань: 70 км (~1 год 15 хв) від Кракова.', auschwitz_ride: 'Потрібен трансфер? Прямі поїздки до Аушвіца й назад. Зв\'яжіться зі мною в WhatsApp!',
+                    wieliczka_title: 'Соляна шахта Величка', wieliczka_desc: 'Одна з найстаріших соляних шахт світу, ЮНЕСКО. Вражаючі підземні зали, каплиці вирізьблені в солі та кришталеві соляні озера.', wieliczka_info: 'Вхід з гідом (~3 год). Відстань: 15 км (~30 хв) від Кракова. Температура під землею: ~14°C цілий рік — візьміть куртку!', wieliczka_ride: 'Потрібен трансфер? Прямі поїздки до Велички й назад. Зв\'яжіться зі мною в WhatsApp!',
+                    zakopane_title: 'Закопане та Татри', zakopane_desc: 'Найпопулярніший гірський курорт Польщі. Дерев\'яна архітектура, осципек, альпійські пейзажі.', zakopane_info: 'Відстань: 110 км (~1 год 45 хв). Ідеально на цілий день — похід, лижі, краєвиди.', zakopane_gubalowka: 'Фунікулер на Губалувку з панорамою Татр. Ресторани, крамниці, літня гірка.', zakopane_krupowki: 'Головна пішохідна вулиця з ресторанами, магазинами та кіосками з осципком.', zakopane_morskie: 'Смарагдове озеро серед вершин 2500 м. 2 години пішки або каретою з Палениці.', zakopane_ride: 'Поїздка в Закопане? Комфортний трансфер із зупинками. Напишіть у WhatsApp!',
+                    badge_top: 'топ', badge_vibe: 'атмосфера', badge_heart: 'серце', badge_free: 'безкоштовно', badge_polish: 'польська', badge_highlander: 'гуральська', badge_breakfast: 'сніданки', badge_steakhouse: 'стейки', badge_finedining: 'вишукано', badge_medieval: 'середньовіччя', badge_modern: 'сучасно', badge_craftbeer: 'крафт', badge_multitap: 'мультитап', badge_brewery: 'броварня', badge_craftart: 'крафт і арт', badge_livemusic: 'концерти', badge_bohemian: 'богема', badge_cocktails: 'коктейлі', badge_speakeasy: 'спікізі', badge_mustvisit: 'обов\'язково', badge_unesco: 'ЮНЕСКО', badge_daytrip: 'екскурсія', badge_iconic: 'легенда',
+                    tip_label: 'Порада від Dmytro:', tip_text: '"Найкраще фото без натовпу — Закшувек. Польська кухня — Starka або Czarna Kaczka. Крафтове пиво? House of Beer. Екскурсія? Відвезу до Аушвіца, Велички або Закопаного!"'
                 }
-                
-                var offset = -index * container.offsetWidth;
-                track.style.transform = 'translateX(' + offset + 'px)';
-                
-                // Update dots
-                dots.forEach(function(dot, i) {
-                    dot.classList.toggle('active', i === index);
-                });
-                
-                // Update label
-                label.textContent = pageNames[index];
-                
-                currentPage = index;
-            }
+            };
+
+            var sections = {}, currentSection = 'photo';
+            ['photo','history','restaurants','pubs','views','auschwitz','wieliczka','zakopane'].forEach(function(id) { sections[id] = document.getElementById('section-' + id); });
             
-            function goToPage(index) {
-                if (index < 0) index = 0;
-                if (index >= totalPages) index = totalPages - 1;
-                updateUI(index, true);
-            }
-            
-            // Touch events
-            track.addEventListener('touchstart', function(e) {
-                startX = e.touches[0].clientX;
-                currentX = startX;
-                isDragging = true;
-                trackStartX = -currentPage * container.offsetWidth;
-                track.style.transition = 'none';
-            }, { passive: true });
-            
-            track.addEventListener('touchmove', function(e) {
-                if (!isDragging) return;
-                currentX = e.touches[0].clientX;
-                var diff = currentX - startX;
-                var newX = trackStartX + diff;
-                
-                // Добавляем сопротивление на краях
-                if (currentPage === 0 && diff > 0) {
-                    newX = trackStartX + diff * 0.3;
-                } else if (currentPage === totalPages - 1 && diff < 0) {
-                    newX = trackStartX + diff * 0.3;
-                }
-                
-                track.style.transform = 'translateX(' + newX + 'px)';
-            }, { passive: true });
-            
-            track.addEventListener('touchend', function(e) {
-                if (!isDragging) return;
-                isDragging = false;
-                
-                var diff = currentX - startX;
-                var threshold = container.offsetWidth * 0.2;
-                
-                if (diff < -threshold) {
-                    // Свайп влево — следующая страница
-                    goToPage(currentPage + 1);
-                } else if (diff > threshold) {
-                    // Свайп вправо — предыдущая
-                    goToPage(currentPage - 1);
-                } else {
-                    // Возврат на текущую
-                    goToPage(currentPage);
-                }
-            });
-            
-            // Mouse events (для теста на десктопе)
-            track.addEventListener('mousedown', function(e) {
-                startX = e.clientX;
-                currentX = startX;
-                isDragging = true;
-                trackStartX = -currentPage * container.offsetWidth;
-                track.style.transition = 'none';
-                e.preventDefault();
-            });
-            
-            track.addEventListener('mousemove', function(e) {
-                if (!isDragging) return;
-                currentX = e.clientX;
-                var diff = currentX - startX;
-                var newX = trackStartX + diff;
-                
-                if (currentPage === 0 && diff > 0) {
-                    newX = trackStartX + diff * 0.3;
-                } else if (currentPage === totalPages - 1 && diff < 0) {
-                    newX = trackStartX + diff * 0.3;
-                }
-                
-                track.style.transform = 'translateX(' + newX + 'px)';
-            });
-            
-            track.addEventListener('mouseup', function(e) {
-                if (!isDragging) return;
-                isDragging = false;
-                
-                var diff = currentX - startX;
-                var threshold = container.offsetWidth * 0.2;
-                
-                if (diff < -threshold) {
-                    goToPage(currentPage + 1);
-                } else if (diff > threshold) {
-                    goToPage(currentPage - 1);
-                } else {
-                    goToPage(currentPage);
-                }
-            });
-            
-            track.addEventListener('mouseleave', function() {
-                if (isDragging) {
-                    isDragging = false;
-                    goToPage(currentPage);
-                }
-            });
-            
-            // Пересчёт при повороте экрана
-            window.addEventListener('resize', function() {
-                updateUI(currentPage, false);
-            });
-            
-            // Инициализация
-            updateUI(0, false);
-            console.log('✅ Swipe guide ready! 6 pages.');
+            function switchTab(name) { if (currentSection === name || !sections[name]) return; sections[currentSection].classList.remove('active-section'); sections[name].classList.add('active-section'); document.querySelectorAll('.pill').forEach(function(p) { p.classList.remove('active'); if (p.getAttribute('data-section') === name) p.classList.add('active'); }); currentSection = name; }
+            document.getElementById('navPills').addEventListener('click', function(e) { var btn = e.target.closest('.pill'); if (!btn) return; var name = btn.getAttribute('data-section'); if (name) switchTab(name); });
+            var currentLang = 'en';
+            function applyLanguage(lang) { currentLang = lang; var t = translations[lang]; document.querySelectorAll('[data-key]').forEach(function(el) { var key = el.getAttribute('data-key'); if (t[key]) el.innerHTML = t[key]; }); document.querySelectorAll('.lang-btn').forEach(function(btn) { btn.classList.remove('active'); if (btn.getAttribute('data-lang') === lang) btn.classList.add('active'); }); }
+            document.getElementById('langSwitcher').addEventListener('click', function(e) { var btn = e.target.closest('.lang-btn'); if (!btn) return; var lang = btn.getAttribute('data-lang'); if (lang) applyLanguage(lang); });
         })();
     </script>
 </body>
